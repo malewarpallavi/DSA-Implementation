@@ -4,7 +4,7 @@
 **Course:** Logic Building Programming Class  
 **Batch:** Marvellous Infosystems Batch [Your Batch Name / Year]
 
-This repository contains my implementations of **Data Structures and Algorithms (DSA)** as part of the **Logic Building Batch at Marvellous Infosystems**.  
+This repository contains my implementations of **Data Structures and Algorithms (DSA)** as part of the **Logic Building Programming Class at Marvellous Infosystems**.  
 The goal is to strengthen logical thinking, understand fundamental data structures, and improve programming and problem-solving skills through hands-on practice.
 
 ---
@@ -35,28 +35,29 @@ Each concept is implemented in multiple languages to understand different progra
 
 ## 📂 Repository Structure
 
-  DSA-Implementation/
+```text
+DSA-Implementation/
 │
 ├── C/
-│ ├── LinkedList/
-│ ├── Stack/
-│ ├── Queue/
-│ ├── Searching/
-│ └── Sorting/
+│   ├── LinkedList/
+│   ├── Stack/
+│   ├── Queue/
+│   ├── Searching/
+│   └── Sorting/
 │
 ├── CPP/
-│ ├── LinkedList/
-│ ├── Stack/
-│ ├── Queue/
-│ ├── Searching/
-│ └── Sorting/
+│   ├── LinkedList/
+│   ├── Stack/
+│   ├── Queue/
+│   ├── Searching/
+│   └── Sorting/
 │
 └── Java/
-├── LinkedList/
-├── Stack/
-├── Queue/
-├── Searching/
-└── Sorting/
+    ├── LinkedList/
+    ├── Stack/
+    ├── Queue/
+    ├── Searching/
+    └── Sorting/
 
 
 ---
