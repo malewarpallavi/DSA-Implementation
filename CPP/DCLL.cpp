@@ -1,3 +1,12 @@
+///////////////////////////////////////////////////////////
+//                                                       //
+//  File name :     DCLL.cpp                             //
+//  Description :   Doubly Circular Linked List          //
+//  Author :        Pallavi Omprakash Malewar            //
+//  Date :          05/09/2025                           //
+//                                                       //
+///////////////////////////////////////////////////////////
+
 #include<iostream>
 using namespace std;
 

@@ -1,3 +1,12 @@
+///////////////////////////////////////////////////////////
+//                                                       //
+//  File name :     SCLL.cpp                             //
+//  Description :   Singly Circular Linked List          //
+//  Author :        Pallavi Omprakash Malewar            //
+//  Date :          07/02/2026                           //
+//                                                       //
+///////////////////////////////////////////////////////////
+
 import java.util.*;
 
 class Node
