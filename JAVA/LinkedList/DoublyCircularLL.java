@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////
 //                                                       //
-//  File name :     DLLL.cpp                             //
-//  Description :   Doubly Linear Linked List            //
+//  File name :     DoublyCircularLL.java                //
+//  Description :   Doubly Circular Linked List          //
 //  Author :        Pallavi Omprakash Malewar            //
 //  Date :          07/02/2026                           //
 //                                                       //
@@ -16,14 +16,16 @@ class Node
     public Node prev;
 }
 
-class DoublyLL 
+class DoublyCLL 
 {
     private Node first;
+    private Node last;
     private int iCount;
 
-    public DoublyLL()
+    public DoublyCLL()
     {
         first = null;
+        last = null;
         iCount = 0;
     }
 
@@ -40,11 +42,19 @@ class DoublyLL
         if(first == null)
         {
             first = newn;
+            last = newn;
+
+            first.next = first;
+            first.prev = first;
         }
         else
         {
             newn.next = first;
+            newn.prev = last;
+
+            last.next = newn;
             first.prev = newn;
+
             first = newn;
         }
         iCount++;
@@ -59,21 +69,23 @@ class DoublyLL
         newn.next = null;
         newn.prev = null;
 
-        Node temp = null;
-
         if(first == null)
         {
             first = newn;
+            last = newn;
+
+            first.next = first;
+            first.prev = first;
         }
         else
         {
-            temp = first;
-            while(temp.next != null)
-            {
-                temp = temp.next;
-            }
-            temp.next = newn;
-            newn.prev = temp;
+            newn.next = first;
+            newn.prev = last;
+
+            first.prev = newn;
+            last.next = newn;
+
+            last = newn;
         }
         iCount++;
     }
@@ -128,39 +140,38 @@ class DoublyLL
         {
             return;
         }
-        else if(first.next == null)
+        else if(first == last)
         {
             first = null;
+            last = null;
         }
         else
         {
             first = first.next;
-            first.prev = null;
+
+            first.prev = last;
+            last.next = first;
         }
         iCount--;
     }
 
     public void DeleteLast()
     {
-        Node temp = null;
-
         if(first == null)
         {
             return;
         }
-        else if(first.next == null)
+        else if(first == last)
         {
             first = null;
+            last = null;
         }
         else
-        {
-            temp = first;
+        {   
+            last = last.prev;
 
-            while(temp.next != null)
-            {
-                temp = temp.next;
-            }
-            temp.prev.next = null;
+            last.next = first;
+            first.prev = last;
         }
         iCount--;
     }
@@ -208,15 +219,19 @@ class DoublyLL
 
     public void Display()
     {
+        if(first == null) return;
+
         Node temp = null;
         temp = first;
 
-        while(temp != null)
+        do
         {
-            System.out.print("| " + temp.data + " | <-> ");
+            System.out.print("| " + temp.data + " | <=> ");
             temp = temp.next;
         }
-        System.out.println("NULL");
+        while(temp != first);
+
+        System.out.println("..Back to first..");
     }
 
     public int Count()
@@ -226,16 +241,10 @@ class DoublyLL
     
     public void DeleteAll()
     {
-        Node temp = first;
+        if(first == null) return;
 
-        while(temp != null)
-        {
-            Node toDeleteNode = temp.next;
-            temp.next = null;
-            temp.prev = null;
-            temp = toDeleteNode;
-        }
         first = null;
+        last = null;
         iCount = 0;
 
         System.out.println("Entire LinkedList Deleted.");
@@ -243,12 +252,12 @@ class DoublyLL
 
 }
 
-class DLLL
+class DCLL
 {
     public static void main(String A[])
     {
         Scanner scobj = new Scanner(System.in);
-        DoublyLL sobj = new DoublyLL();
+        DoublyCLL dobj = new DoublyCLL();
 
         int iRet = 0;
         int iPos = 0;
@@ -257,7 +266,7 @@ class DLLL
 
 
         System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------");
-        System.out.println("---------------------------------------------------------Doubly Linear Linked List-------------------------------------------------------------");
+        System.out.println("---------------------------------------------------------Doubly Circular Linked List-----------------------------------------------------------");
         System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------");
 
         while(true)
@@ -286,14 +295,14 @@ class DLLL
                 System.out.println("Enter the data you want to insert: ");
                 iValue = scobj.nextInt();
 
-                sobj.InsertFirst(iValue);
+                dobj.InsertFirst(iValue);
             }
             else if(iChoice == 2)
             {
                 System.out.println("Enter the data you want to insert: ");
                 iValue = scobj.nextInt();
 
-                sobj.InsertLast(iValue);
+                dobj.InsertLast(iValue);
             }
             else if(iChoice == 3)
             {
@@ -303,17 +312,17 @@ class DLLL
                 System.out.println("Enter the position where you want to enter data: ");
                 iPos = scobj.nextInt();
 
-                sobj.InsertAtPos(iValue, iPos);
+                dobj.InsertAtPos(iValue, iPos);
             }
             else if(iChoice == 4)
             {
                 System.out.println("Deleting the First Element from Linked List.");
-                sobj.DeleteFirst();
+                dobj.DeleteFirst();
             }
             else if(iChoice == 5)
             {
                 System.out.println("Deleting the last Element from Linked List.");
-                sobj.DeleteLast();
+                dobj.DeleteLast();
             }
             else if(iChoice == 6)
             {
@@ -322,21 +331,21 @@ class DLLL
 
                 System.out.println("Deleting the node from Position " + iPos);
 
-                sobj.DeleteAtPos(iPos);
+                dobj.DeleteAtPos(iPos);
             }
             else if(iChoice == 7)
             {
                 System.out.println("Elements of the Linked List are : ");
-                sobj.Display();
+                dobj.Display();
             }
             else if(iChoice == 8)
             {
-                iRet = sobj.Count();
+                iRet = dobj.Count();
                 System.out.println("Number of Nodes in the Linked List : " + iRet);
             }
             else if(iChoice == 9)
             {
-                sobj.DeleteAll();
+                dobj.DeleteAll();
             }
             else if(iChoice == 0)
             {

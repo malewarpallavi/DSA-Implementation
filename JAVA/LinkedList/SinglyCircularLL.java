@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////
 //                                                       //
-//  File name :     SLLL.cpp                             //
-//  Description :   Singly Linear Linked List            //
+//  File name :     SinglyCircularLL.java                //
+//  Description :   Singly Circular Linked List          //
 //  Author :        Pallavi Omprakash Malewar            //
 //  Date :          07/02/2026                           //
 //                                                       //
@@ -15,14 +15,17 @@ class Node
     public Node next;
 }
 
-class SinglyLL 
+class SinglyCLL 
 {
     private Node first;
+    private Node last;
     private int iCount;
 
-    public SinglyLL()
+    public SinglyCLL()
     {
         first = null;
+        last = null;
+
         iCount = 0;
     }
 
@@ -38,11 +41,15 @@ class SinglyLL
         if(first == null)
         {
             first = newn;
+            last = newn;
+
+            last.next = first;
         }
         else
         {
             newn.next = first;
             first = newn;
+            last.next = newn;
         }
         iCount++;
     }
@@ -54,20 +61,18 @@ class SinglyLL
         newn.data = iNo;
         newn.next = null;
 
-        Node temp = null;
-
         if(first == null)
         {
             first = newn;
+            last = newn;
+
+            last.next = first;
         }
         else
         {
-            temp = first;
-            while(temp.next != null)
-            {
-                temp = temp.next;
-            }
-            temp.next = newn;
+            last.next = newn;
+            last = newn;
+            last.next = first;
         }
         iCount++;
     }
@@ -101,7 +106,7 @@ class SinglyLL
 
             temp = first;
 
-            for(iCnt = 1 ; iCnt < iPos  -1 ; iCnt++)
+            for(iCnt = 1 ; iCnt < iPos - 1 ; iCnt++)
             {
                 temp = temp.next;
             }
@@ -118,13 +123,15 @@ class SinglyLL
         {
             return;
         }
-        else if(first.next == null)
+        else if(first == last)
         {
             first = null;
+            last = null;
         }
         else
         {
             first = first.next;
+            last.next = first;
         }
         iCount--;
     }
@@ -137,19 +144,21 @@ class SinglyLL
         {
             return;
         }
-        else if(first.next == null)
+        else if(first == last)
         {
             first = null;
+            last = null;
         }
         else
         {
             temp = first;
 
-            while(temp.next.next != null)
+            while(temp.next != last)
             {
                 temp = temp.next;
             }
-            temp.next = null;
+            last = temp;
+            last.next = first;
         }
         iCount--;
     }
@@ -189,15 +198,23 @@ class SinglyLL
 
     public void Display()
     {
+        if(first == null)
+        {
+            System.out.println("Linked List is empty.");
+            return;
+        }
+
         Node temp = null;
         temp = first;
 
-        while(temp != null)
+        do
         {
             System.out.print("| " + temp.data + " | -> ");
             temp = temp.next;
         }
-        System.out.println("NULL");
+        while(temp != first);
+        
+        System.out.println("..back to First..");
     }
 
     public int Count()
@@ -208,19 +225,19 @@ class SinglyLL
     public void DeleteAll()
     {
         first = null;
+        last = null;
         iCount = 0;
 
         System.out.println("Entire LinkedList Deleted.");
     }
-
 }
 
-class SLLL
+class SinglyCircularLL
 {
     public static void main(String A[])
     {
         Scanner scobj = new Scanner(System.in);
-        SinglyLL sobj = new SinglyLL();
+        SinglyCLL sobj = new SinglyCLL();
 
         int iRet = 0;
         int iPos = 0;
@@ -229,7 +246,7 @@ class SLLL
 
 
         System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------");
-        System.out.println("---------------------------------------------------------Singly Linear Linked List-------------------------------------------------------------");
+        System.out.println("---------------------------------------------------------Singly Circular Linked List-----------------------------------------------------------");
         System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------");
 
         while(true)
