@@ -1,13 +1,13 @@
 ///////////////////////////////////////////////////////////
 //                                                       //
-//  File name :     SLLL.cpp                             //
-//  Description :   Singly Linear Linked List            //
+//  File name :     SinglyCircularLL.cpp                 //
+//  Description :   Singly Circular Linked List          //
 //  Author :        Pallavi Omprakash Malewar            //
 //  Date :          05/09/2025                           //
 //                                                       //
 ///////////////////////////////////////////////////////////
 
- 
+
 #include<iostream>
 using namespace std;
 
@@ -20,45 +20,27 @@ struct node
 typedef struct node NODE;
 typedef struct node * PNODE;
 
-class SinglyLLL
+class SinglyCLL
 {
     private:
         PNODE first;
+        PNODE last;
         int iCount;
-    
-    public:
-        SinglyLLL()
+
+    public:  
+        SinglyCLL()
         {
             this->first = NULL;
+            this->last = NULL;
             this->iCount = 0;
         }
 
-        ~SinglyLLL()
+        ~SinglyCLL()
         {
-            while(first != NULL)
+            while(iCount != 0)
             {
                 DeleteFirst();
             }
-        }
-
-        void Display()
-        {
-            PNODE temp = NULL;
-
-            if(first == NULL)
-            {
-                cout<<"List is Empty.\n";
-                return;
-            }
-
-            temp = first;
-
-            while(temp != NULL)
-            {
-                cout<<"| " << temp->data << " | -> ";
-                temp = temp -> next;
-            }
-            cout<<"NULL\n";
         }
 
         void InsertFirst(int iNo)
@@ -69,44 +51,50 @@ class SinglyLLL
 
             newn -> data = iNo;
             newn -> next = NULL;
-
-            if(first == NULL)
+            
+            if(first == NULL && last == NULL)
             {
                 first = newn;
+                last = newn;
+
+                first -> next = last;
+                last -> next = first;
             }
             else
             {
                 newn -> next = first;
+                last -> next = newn;
+
                 first = newn;
             }
+
             iCount++;
         }
 
         void InsertLast(int iNo)
         {
             PNODE newn = NULL;
-            PNODE temp = NULL;
 
             newn = new NODE;
 
             newn -> data = iNo;
             newn -> next = NULL;
 
-            if(first == NULL)
+            if(first == NULL && last == NULL)
             {
                 first = newn;
+                last = newn;
+
+                last -> next = first;
             }
             else
             {
-                temp = first;
+                last -> next = newn;
+                newn -> next = first;
 
-                while(temp -> next != NULL)
-                {
-                    temp = temp -> next;
-                }
-
-                temp -> next = newn;
+                last = newn;
             }
+
             iCount++;
         }
 
@@ -116,9 +104,9 @@ class SinglyLLL
             PNODE newn = NULL;
             PNODE temp = NULL;
 
-            if((iPos < 1) || (iPos > iCount + 1))
+            if((iPos <= 0) || (iPos > iCount + 1))
             {
-                cout<<"Invalid Input.\nPlease Enter Valid Input.\n";
+                cout<<"Invalid Position.\nPlease Enter Valid Position.\n";
                 return;
             }
 
@@ -126,7 +114,7 @@ class SinglyLLL
             {
                 InsertFirst(iNo);
             }
-            else if(iPos == iCount+1)
+            else if(iPos == iCount + 1)
             {
                 InsertLast(iNo);
             }
@@ -149,31 +137,31 @@ class SinglyLLL
                 newn -> next = temp -> next;
                 temp -> next = newn;
 
-                iCount++;
+                iCount++;   
             }
+            
         }
 
         void DeleteFirst()
         {
-            if(first == NULL)
+            if(first == NULL && last == NULL)
             {
                 cout<<"List is Empty.\n";
                 return;
             }
-            else if(first -> next == NULL)
+            else if(first == last)
             {
-                delete first;
+                delete(first);
+
                 first = NULL;
+                last = NULL;
             }
             else
             {
-                PNODE temp = NULL;
-
-                temp = first;
-
                 first = first -> next;
-                delete(temp);
-                temp = NULL;
+
+                delete(last -> next);
+                last -> next = first;
             }
             iCount--;
         }
@@ -182,27 +170,33 @@ class SinglyLLL
         {
             PNODE temp = NULL;
 
-            if(first == NULL)
+            if(first == NULL && last == NULL)
             {
                 cout<<"List is Empty.\n";
                 return;
             }
-            else if(first -> next == NULL)
+            else if(first == last)
             {
                 delete first;
+
                 first = NULL;
+                last = NULL;
             }
             else
             {
                 temp = first;
 
-                while(temp -> next -> next != NULL)
+                while(temp -> next != last)
                 {
                     temp = temp -> next;
                 }
-                delete(temp -> next);
-                temp -> next = NULL;
+
+                temp -> next = first;
+
+                delete(last);
+                last = temp;
             }
+
             iCount--;
         }
 
@@ -212,7 +206,7 @@ class SinglyLLL
             PNODE temp = NULL;
             PNODE target = NULL;
 
-            if((iPos < 1) || (iPos > iCount))
+            if((iPos <= 0) || (iPos > iCount))
             {
                 cout<<"Invalid Position.\nPlease Enter Valid Position.\n";
                 return;
@@ -236,13 +230,36 @@ class SinglyLLL
                     temp = temp -> next;
                     i++;
                 }
+
                 target = temp -> next;
-
+                
                 temp -> next = target -> next;
-
                 delete(target);
 
                 iCount--;
+            }
+        }
+
+        void Display()
+        {
+            PNODE temp = NULL;
+
+            if(first == NULL && last == NULL)
+            {
+                cout<<"Empty Linked List.\n";
+                return;
+            }
+            else
+            {
+                temp = first;
+
+                do
+                {
+                    cout<< "| "<< temp -> data << " | -> ";
+                    temp = temp -> next;
+                } while (temp != last -> next);
+                
+                cout<<"...\n";
             }
         }
 
@@ -254,7 +271,7 @@ class SinglyLLL
 
 int main()
 {
-    SinglyLLL sobj;
+    SinglyCLL sobj;
     
     int iChoice = 0;
     int iValue = 0;
@@ -262,7 +279,7 @@ int main()
     int iRet = 0;
 
     cout<<"-----------------------------------------------------------------------------------------------------------------------------------------------\n";
-    cout<<"---------------------------------------------------------Singly Linear Linked List-------------------------------------------------------------\n";
+    cout<<"---------------------------------------------------------Singly Circular Linked List-----------------------------------------------------------\n";
     cout<<"-----------------------------------------------------------------------------------------------------------------------------------------------\n";
 
     while(1)

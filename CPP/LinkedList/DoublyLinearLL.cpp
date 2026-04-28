@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////
 //                                                       //
-//  File name :     DCLL.cpp                             //
-//  Description :   Doubly Circular Linked List          //
+//  File name :     DoublyLinearLL.cpp                   //
+//  Description :   Doubly Linear Linked List            //
 //  Author :        Pallavi Omprakash Malewar            //
 //  Date :          05/09/2025                           //
 //                                                       //
@@ -20,22 +20,20 @@ struct node
 typedef struct node NODE;
 typedef struct node * PNODE;
 
-class DoublyCLL
+class DoublyLLL
 {
     private:
         PNODE first;
-        PNODE last;
         int iCount;
 
     public:
-        DoublyCLL()
+        DoublyLLL()
         {
             this->first = NULL;
-            this->last = NULL;
             this->iCount = 0;
         }
 
-        ~DoublyCLL()
+        ~DoublyLLL()
         {
             while(iCount != 0)
             {
@@ -54,14 +52,13 @@ class DoublyCLL
 
             newn = new NODE;
 
-            newn -> prev = NULL;
             newn -> data = iNo;
             newn -> next = NULL;
-            
+            newn -> prev = NULL;
+
             if(first == NULL)
             {
                 first = newn;
-                last = newn;
             }
             else
             {
@@ -70,10 +67,6 @@ class DoublyCLL
 
                 first = newn;
             }
-
-            last -> next = first;
-            first -> prev = last;
-
             iCount++;
         }
 
@@ -83,41 +76,41 @@ class DoublyCLL
 
             newn = new NODE;
 
-            newn -> prev = NULL;
             newn -> data = iNo;
             newn -> next = NULL;
-            
+            newn -> prev = NULL;
+
             if(first == NULL)
             {
                 first = newn;
-                last = newn;
             }
             else
             {
-                last -> next = newn;
-                newn -> prev = last;
+                PNODE temp = NULL;
 
-                last = newn;
+                temp = first;
+
+                while(temp -> next != NULL)
+                {
+                    temp = temp -> next;
+                }
+
+                temp -> next = newn;
+                newn -> prev = temp;
             }
-
-            last -> next = first;
-            first -> prev = last;
-
             iCount++;
         }
 
         void InsertAtPos(int iNo, int iPos)
         {
+            int i = 0;
+
             if((iPos < 1) || (iPos > iCount + 1))
             {
-                cout<<"Invalid Position.\nPlease Enter Valid Input.\n";
+                cout<<"Invalid Position.\nPlease Enter valid Position.\n";
                 return;
             }
 
-            int i = 0;
-            PNODE newn = NULL;
-            PNODE temp = NULL;
-            
             if(iPos == 1)
             {
                 InsertFirst(iNo);
@@ -128,13 +121,15 @@ class DoublyCLL
             }
             else
             {
-                newn = new NODE;
+                PNODE newn = NULL;
+                PNODE temp = NULL;
 
+                newn = new NODE;
+                temp = first;
+
+                newn -> data = iNo;
                 newn -> next = NULL;
                 newn -> prev = NULL;
-                newn -> data = iNo;
-
-                temp = first;
 
                 i = 1;
                 while(i < (iPos - 1))
@@ -148,8 +143,8 @@ class DoublyCLL
 
                 temp -> next = newn;
                 newn -> prev = temp;
-                
-                iCount++;
+
+                iCount++;   
             }
         }
 
@@ -160,65 +155,62 @@ class DoublyCLL
                 cout<<"List is Empty.\n";
                 return;
             }
-            else if(first == last)
+            else if(first -> next == NULL)
             {
                 delete(first);
-
                 first = NULL;
-                last = NULL;
             }
             else
             {
                 PNODE temp = NULL;
-
                 temp = first;
 
                 first = first -> next;
-                last -> next = first;
-                first -> prev = last;
 
                 delete(temp);
-                temp = NULL;
+                first -> prev = NULL;
             }
             iCount--;
         }
 
         void DeleteLast()
         {
+            PNODE temp = NULL;
+
             if(first == NULL)
             {
-                cout<<"List is Empty.\n";
+                cout<<"List is Empty\n";
                 return;
             }
-            else if(first == last)
+            else if(first -> next == NULL)
             {
                 delete(first);
-
                 first = NULL;
-                last = NULL;
             }
             else
             {
-                PNODE temp = NULL;
+                temp = first;
 
-                temp = last;
+                while(temp -> next -> next != NULL)
+                {
+                    temp = temp -> next;
+                }
 
-                last = last -> prev;
-
-                last -> next = first;
-                first -> prev = last;
-
-                delete(temp);
-                temp = NULL;
+                delete(temp -> next);
+                temp -> next = NULL;
             }
             iCount--;
         }
 
         void DeleteAtPos(int iPos)
         {
+            int i = 0;
+            PNODE temp = NULL;
+            PNODE target = NULL;
+
             if((iPos < 1) || (iPos > iCount))
             {
-                cout << "Invalid Position.\nPlease Enter valid Position.\n";
+                cout<<"Invalid Position.\nPlease Entre valid Position.\n";
                 return;
             }
 
@@ -230,13 +222,10 @@ class DoublyCLL
             {
                 DeleteLast();
             }
-            else 
+            else
             {
-                int i = 0;
-                PNODE temp = NULL;
-                PNODE target = NULL;
-
                 temp = first;
+
                 i = 1;
                 while(i < (iPos - 1))
                 {
@@ -258,29 +247,28 @@ class DoublyCLL
 
         void Display()
         {
-            PNODE temp = NULL;
-
-            temp = first;
-
             if(first == NULL)
             {
                 cout<<"List is Empty.\n";
                 return;
             }
 
-            do
-            {
-                cout << "| "<< temp->data << " | <=> ";
-                temp = temp -> next;
-            } while (temp != first);
-            cout<<"...\n";
-        }
+            PNODE temp = NULL;
 
+            temp = first;
+
+            while(temp != NULL)
+            {
+                cout<<"| " << temp -> data <<" | <=> ";
+                temp = temp -> next;
+            }
+            cout<<"NULL\n";
+        }
 };
 
 int main()
 {
-    DoublyCLL dobj;
+    DoublyLLL dobj;
     
     int iChoice = 0;
     int iValue = 0;
@@ -288,7 +276,7 @@ int main()
     int iRet = 0;
 
     cout<<"-----------------------------------------------------------------------------------------------------------------------------------------------\n";
-    cout<<"---------------------------------------------------------Doubly Circular Linked List-----------------------------------------------------------\n";
+    cout<<"---------------------------------------------------------Doubly Linear Linked List-------------------------------------------------------------\n";
     cout<<"-----------------------------------------------------------------------------------------------------------------------------------------------\n";
 
     while(1)

@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                 //
-//  File name :     SLLL.c                                                                         //
-//  Description :   Implementation of a Singly Linear Linked List (SLL) in C.                      //
+//  File name :     DoublyCircularLL.c                                                             //
+//  Description :   Implementation of a Doubly Circular Linked List (DCL) in C.                    //
 //  Author :        Pallavi Omprakash Malewar                                                      //
 //  Date :          27/10/2025                                                                     //
 //                                                                                                 //
@@ -13,26 +13,35 @@
 struct node
 {
     int data;
-    struct node *next;
-}; 
+    struct node * next;
+    struct node * prev;
+};
 
 typedef struct node NODE;
 typedef struct node * PNODE;
 typedef struct node ** PPNODE;
 
-int Count(PNODE first)
+int Count(PNODE first, PNODE last)
 {
     int iCount = 0;
 
-    while(first != NULL)
+    if(first == NULL || last == NULL)
     {
-        first = first -> next;
-        iCount++;
+        return iCount;
     }
-    return iCount;
+    else
+    {
+        do
+        {
+            iCount++;
+            first = first -> next;
+        } while (first != last -> next);
+
+        return iCount;
+    }
 }
 
-void InsertFirst(PPNODE first, int iNo)
+void InsertFirst(PPNODE first, PPNODE last, int iNo)
 {
     PNODE newn = NULL;
 
@@ -46,19 +55,30 @@ void InsertFirst(PPNODE first, int iNo)
 
     newn -> data = iNo;
     newn -> next = NULL;
+    newn -> prev = NULL;
 
-    if((*first) == NULL)
+    if(*first == NULL)
     {
-        *first = newn;
+        newn -> next = newn;
+        newn -> prev = newn;
+
+        (*first) = newn;
+        (*last) = newn;
+
     }
     else
     {
         newn -> next = (*first);
+        newn -> prev = (*last);
+
+        (*last) -> next = newn;
+        (*first) -> prev = newn;
+
         *first = newn;
     }
 }
 
-void InsertLast(PPNODE first, int iNo)
+void InsertLast(PPNODE first, PPNODE last, int iNo)
 {
     PNODE newn = NULL;
 
@@ -66,54 +86,59 @@ void InsertLast(PPNODE first, int iNo)
 
     if(newn == NULL)
     {
-        printf("Memory Allocation Failed.\n");
+        printf("Memory Allocation is Failed.\n");
         return;
     }
 
     newn -> data = iNo;
     newn -> next = NULL;
+    newn -> prev = NULL;
 
     if(*first == NULL)
     {
-        *first = newn;
+        newn -> next = newn;
+        newn -> prev = newn;
+
+        (*first) = newn;
+        (*last) = newn;                                             
     }
     else
     {
-        PNODE temp = *first;
+        newn -> prev = *last;
+        (*last) -> next = newn;
 
-        while((temp -> next) != NULL)
-        {
-            temp = temp -> next;
-        }
+        newn -> next = *first;
+        *last = newn;
 
-        temp -> next = newn;
+        (*first) -> prev = newn;
     }
-}
+}   
 
-void InsertAtPos(PPNODE first, int iNo, int iPos)
+void InsertAtPos(PPNODE first, PPNODE last, int iNo, int iPos)
 {
     int iCount = 0;
+    iCount = Count(*first, *last);
 
-    iCount = Count(*first);
-
-    if((iPos <= 0) || (iPos > (iCount + 1)))
+    if((iPos <= 0) || (iPos > iCount + 1))
     {
-        printf("Invalid Position\n");
+        printf("Invalid Position.\nPlease Enter Valid Position.\n");
         return;
     }
 
     if(iPos == 1)
     {
-        InsertFirst(first, iNo);
+        InsertFirst(first, last, iNo);
+
     }
-    else if(iPos == (iCount + 1))
+    else if(iPos == iCount+1)
     {
-        InsertLast(first, iNo);
+        InsertLast(first, last, iNo);
     }
-    
     else
     {
+        int i = 0;
         PNODE newn = NULL;
+        PNODE temp = NULL;
 
         newn = (PNODE)malloc(sizeof(NODE));
 
@@ -124,138 +149,170 @@ void InsertAtPos(PPNODE first, int iNo, int iPos)
         }
 
         newn -> data = iNo;
-        newn -> next = NULL; 
+        newn -> next  = NULL;
+        newn -> prev = NULL;
 
-        PNODE temp = NULL;
+        temp = (*first);
 
-        temp = *first;
-
-        int i = 0;
-
-        for(i = 1 ; i < iPos - 1 ; i++)
+        i = 1;
+        while(i < iPos - 1)
         {
             temp = temp -> next;
+            i++;
         }
 
+        temp -> next -> prev = newn;
         newn -> next = temp -> next;
+
         temp -> next = newn;
+        newn -> prev = temp;
+    }
+}       
+
+void DeleteFirst(PPNODE first, PPNODE last)
+{
+    if(*first == NULL)
+    {
+        printf("List is Empty.\n");
+        return;
+    }
+    else if(*first == *last)
+    {
+        free(*first);
+
+        *first = NULL;
+        *last = NULL;
+    }
+    else
+    {
+        (*first) -> next -> prev = *last;
+        (*last) -> next = (*first )-> next;
+
+        free(*first);
+
+        *first = (*last) -> next;
     }
 }
 
-void DeleteFirst(PPNODE first)
+void DeleteLast(PPNODE first, PPNODE last)
 {
     if(*first == NULL)
     {
         return;
     }
-    else
-    {
-        PNODE temp = NULL;
-
-        temp = (*first) -> next;
-
-        free(*first);
-        *first = temp;
-    }
-}
-
-void DeleteLast(PPNODE first)
-{
-    if((*first) == NULL)
-    {
-        return;
-    }
-    else if((*first) -> next == NULL)
+    else if(*first == *last)
     {
         free(*first);
-        (*first) = NULL; 
+
+        *first = NULL;
+        *last = NULL;
     }
     else
     {
-        PNODE temp = NULL;
+        (*last) -> prev -> next = (*first);
+        (*first) -> prev = (*last) -> prev;
 
-        temp = *first;
+        free(*last);
 
-        while(temp -> next -> next != NULL)
-        {
-            temp = temp -> next;
-        }
-        free(temp -> next);
-        temp -> next = NULL;
+        (*last) = (*first) -> prev;
     }
 }
 
-void DeleteAtPos(PPNODE first, int iPos)
+void DeleteAtPos(PPNODE first, PPNODE last, int iPos)
 {
-    int iCount = 0;
+    int iCount = 0, i = 0;
+    PNODE temp = NULL;
+    PNODE target = NULL;
 
-    iCount = Count(*first);
+    iCount = Count(*first, *last);
 
     if((iPos <= 0) || (iPos > iCount))
     {
-        printf("Invalid Input\n");
+        printf("Invalid Position.\nPlease Enter valid Position.\n");
         return;
     }
 
     if(iPos == 1)
     {
-        DeleteFirst(first);
+        DeleteFirst(first, last);
     }
     else if(iPos == iCount)
     {
-        DeleteLast(first);
+        DeleteLast(first, last);
     }
     else
     {
-        PNODE temp = NULL;
-        PNODE target = NULL;
+        temp = *first;
 
-        temp = (*first);
-
-        for(int i = 1 ; i < iPos - 1 ; i++)
+        i = 1;
+        while(i < (iPos - 1))
         {
             temp = temp -> next;
+            i++;
         }
-
         target = temp -> next;
+
+        target -> next -> prev = temp;
         temp -> next = target -> next;
+
         free(target);
     }
-}
+}   
 
-void Display(PNODE first)
+void Display(PNODE first, PNODE last)
 {
-    while(first != NULL)
+    if(first == NULL || last == NULL)
     {
-        printf("| %d | -> ", first -> data);
+        printf("List is Empty.\n");
+        return;
+    }
+    do
+    {
+        printf("| %d | <=> ", first -> data);
         first = first -> next;
-    }
-    printf("NULL\n");
+    } while(first != last -> next);
+    printf("...back to head\n");
 }
 
-void DeleteAll(PPNODE first)
+void DeleteAll(PPNODE first, PPNODE last)
 {
-    PNODE temp = NULL;
-
-    while(*first != NULL)
+    if((*first) == NULL)
     {
-        temp = *first;
-        *first = (*first) -> next;
-        free(temp);
+        return;
     }
+
+    PNODE temp = NULL;
+    PNODE nextNode = NULL;
+
+    temp = (*first);
+
+    while(temp != *last)
+    {
+        nextNode = temp -> next;
+        free(temp);
+        temp = nextNode;
+    }
+
+    free(*last);
+
+    (*first) = NULL;
+    (*last) = NULL;
+    
 }
 
 int main()
 {
     PNODE head = NULL;
+    PNODE tail = NULL;
 
     int iChoice = 0;
     int iValue = 0;
     int iPos = 0;
     int iRet = 0;
 
+    
     printf("-----------------------------------------------------------------------------------------------------------------------------------------------\n");
-    printf("---------------------------------------------------------Singly Linear Linked List-------------------------------------------------------------\n");
+    printf("---------------------------------------------------------Doubly Circular Linked List-------------------------------------------------------------\n");
     printf("-----------------------------------------------------------------------------------------------------------------------------------------------\n");
 
     while(1)
@@ -284,14 +341,14 @@ int main()
             printf("Enter the data you want to insert : ");
             scanf("%d",&iValue);
 
-            InsertFirst(&head, iValue);
+            InsertFirst(&head, &tail, iValue);
         }
         else if(iChoice == 2)
         {
             printf("Enter the data you want to insert : ");
             scanf("%d",&iValue);
 
-            InsertLast(&head, iValue);
+            InsertLast(&head, &tail, iValue);
         }
         else if(iChoice == 3)
         {
@@ -301,19 +358,19 @@ int main()
             printf("Enter the Position where you want to enter data : ");
             scanf("%d", &iPos);
 
-            InsertAtPos(&head, iValue, iPos);
+            InsertAtPos(&head, &tail, iValue, iPos);
         }
         else if(iChoice == 4)
         {
             printf("Deleting the First element from Linked List.\n");
 
-            DeleteFirst(&head);
+            DeleteFirst(&head, &tail);
         }
         else if(iChoice == 5)
         {
             printf("Deleting the Last element from Linked List.\n");
 
-            DeleteLast(&head);
+            DeleteLast(&head,  &tail);
         }
         else if(iChoice == 6)
         {
@@ -322,26 +379,26 @@ int main()
 
             printf("Deleting the node from Position : %d\n", iPos);
 
-            DeleteAtPos(&head, iPos);
+            DeleteAtPos(&head, &tail, iPos);
         }
         else if(iChoice == 7)
         {
             printf("Elements of the Linked List are :\n");
-            Display(head);
+            Display(head, tail);
         }
         else if(iChoice == 8)
         {
-            iRet = Count(head);
+            iRet = Count(head, tail);
             printf("Number of Nodes in the Linked List : %d\n", iRet);
         }
         else if(iChoice == 9)
         {
-            DeleteAll(&head);
-            printf("Entire Linked List Deleted Successfully.\n");
+            DeleteAll(&head, &tail);
+            printf("Entire Linked List is Deleted.\n");
         }
         else if(iChoice == 0)
         {
-            DeleteAll(&head);
+            DeleteAll(&head, &tail);
             printf("Thank You for using our Application.\n");
             break;
         }
@@ -351,6 +408,5 @@ int main()
         }
         printf("-----------------------------------------------------------------------------------------------------------------------------------------------\n");
     }
-
     return 0;
 }

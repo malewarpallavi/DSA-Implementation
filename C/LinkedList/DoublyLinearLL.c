@@ -1,6 +1,6 @@
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     //                                                                                                 //
-    //  File name :     DLLL.c                                                                         //
+    //  File name :     DoublyLinearLL.c                                                               //
     //  Description :   Implementation of a Doubly Linear Linked List (DLL) in C.                      //
     //  Author :        Pallavi Omprakash Malewar                                                      //
     //  Date :          27/10/2025                                                                     //

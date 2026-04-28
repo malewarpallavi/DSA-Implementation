@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                 //
-//  File name :     SCLL.c                                                                         //
+//  File name :     SinglyCircularLL.c                                                             //
 //  Description :   Implementation of a Singly Circular Linked List (SCL) in C.                    //
 //  Author :        Pallavi Omprakash Malewar                                                      //
 //  Date :          27/10/2025                                                                     //
@@ -155,7 +155,7 @@ void InsertAtPos(PPNODE first, PPNODE last, int iNo, int iPos)
 
 void DeleteFirst(PPNODE first, PPNODE last)
 {
-    if((*first) == NULL && (*last) == NULL)
+    if((*first) == NULL)
     {
         printf("Linked List is Empty.\n");
         return;
@@ -181,6 +181,7 @@ void DeleteLast(PPNODE first, PPNODE last)
 {
     if(*first == NULL)
     {
+        printf("Linked List is Empty.\n");
         return;
     }
     else if(*first == *last)
